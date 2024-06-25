@@ -10,30 +10,13 @@ params = {'axes.labelsize': 12,
      
 rcParams.update(params)     
 
+x=np.loadtxt("Cylinder2D-Re100-forces.dat")
 
-ff   =  sys.argv[1]
-
-ind1  = int(sys.argv[2])
-ind2  = int(sys.argv[3])
-fact1 = float(sys.argv[4])
-fact2 = float(sys.argv[5])
-
-inpfile = ff
-
-x=np.loadtxt(inpfile)
-
-x[:,ind1]=fact1*x[:,ind1]
-x[:,ind2]=fact2*x[:,ind2]
-
-x[:,ind2] = x[:,ind2] + 0.0
-
-col='k'
-
-if(len(sys.argv) > 6):
-   col=sys.argv[6]
+x[:,1]=2.0*x[:,1]
+x[:,2]=2.0*x[:,2]
 
 
-plt.plot(x[:,ind1],x[:,ind2], col, linewidth=2.0, markersize=8.0)
+plt.plot(x[:,0], x[:,2], 'k', linewidth=2.0, markersize=8.0)
 #plt.xlim(0.0,1.5)
 #plt.xlim(0.0,40.0)
 #plt.ylim(430.0,450.0)
@@ -42,10 +25,12 @@ plt.plot(x[:,ind1],x[:,ind2], col, linewidth=2.0, markersize=8.0)
 
 plt.grid('on')
 
-#plt.xlabel('time',fontsize=14)
-#plt.ylabel('Lift force',fontsize=14)
+plt.xlabel('Time',fontsize=14)
+plt.ylabel('Lift coefficient',fontsize=14)
+
+plt.tight_layout()
 
 plt.show()
-outfile = ff + '.eps'
-plt.savefig(outfile, dpi=200)
+
+plt.savefig('Cylinder2D-Re100-CL.png', dpi=500)
 
