@@ -81,10 +81,6 @@ V2 = functionspace(msh, U2) # Vector function space
 w = Function(ME)
 u, p = split(w)
 
-# functions with DOFs at the current step
-w_new = Function(ME)
-u_new, p_new = split(w_new)
-
 # functions with DOFs at the previous step
 w_old = Function(ME)
 u_old, p_old = split(w_old)
@@ -267,26 +263,23 @@ Vs = functionspace(msh, U1)
 
 u_proj = Function(Vs)
 u_proj.name = "velocity"
-u_proj.interpolate(w_new.sub(0))
 
 p_proj = Function(functionspace(msh,P1))
 p_proj.name = "pressure"
-p_proj.interpolate(w_new.sub(1))
-#p_proj = w.sub(1)
 
 
-fname = "cylinder2d-velo-.pvd"
+fname = "./results/cylinder2d-velo-.pvd"
 VTKfile_Velo = io.VTKFile(msh.comm, fname, "w")
 VTKfile_Velo.write_mesh(msh)
 
-fname = "cylinder2d-pres-.pvd"
+fname = "./results/cylinder2d-pres-.pvd"
 VTKfile_Pres = io.VTKFile(msh.comm, fname, "w")
 VTKfile_Pres.write_mesh(msh)
 
 # function to write results to XDMF at time t
 def writeResults_Velo(time_cur, timeStep):
 
-    u_proj.interpolate(w_new.sub(0))
+    u_proj.interpolate(w.sub(0))
 
     #    file.close()
     VTKfile_Velo.write_function(u_proj)
@@ -294,7 +287,7 @@ def writeResults_Velo(time_cur, timeStep):
 # function to write results to XDMF at time t
 def writeResults_Pres(time_cur, timeStep):
     
-    p_proj.interpolate(w_new.sub(1))
+    p_proj.interpolate(w.sub(1))
 
     VTKfile_Pres.write_function(p_proj)
 
@@ -325,13 +318,8 @@ while ( round(time_cur+dt, 6) <= time_final):
     print("\n\n Load step = ", timeStep)
     print("     Time      = ", time_cur)
 
-    #tz.value = -320*time_cur
-    #traction.value = time_cur
-    #traction.value = (0.0,0.0,-320.0*time_cur)
-    #traction = Constant(msh, (0.0,0.625*time_cur,0.0))
 
     # Solve the problem
-    # Compute solution
     (num_its, converged) = solver.solve(w)
 
     if converged:
