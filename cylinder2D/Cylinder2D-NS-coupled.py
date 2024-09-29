@@ -43,7 +43,7 @@ from basix.ufl import element, mixed_element, quadrature_element
 
 
 
-msh, markers, facet_tags = io.gmshio.read_from_msh("CFD-cylinder-P1.msh", MPI.COMM_WORLD)
+msh, markers, facet_tags = io.gmshio.read_from_msh("CFD-cylinder-P2.msh", MPI.COMM_WORLD)
 
 # coordinates of the nodes
 x = ufl.SpatialCoordinate(msh)
@@ -105,12 +105,12 @@ dw = TrialFunction(ME)
 
 # Parameter values
 rho = Constant(msh, PETSc.ScalarType(1.0))
-mu  = Constant(msh, PETSc.ScalarType(0.01))
+mu  = Constant(msh, PETSc.ScalarType(0.05))
 
 
 t = 0.0
 dt = 0.1
-time_final = 300.0
+time_final = 10.0
 
 num_steps = np.int32(time_final/dt) + 1
 
@@ -292,7 +292,7 @@ def writeResults_Pres(time_cur, timeStep):
     VTKfile_Pres.write_function(p_proj)
 
 
-fname = "Cylinder2D-Re100-forces.dat"
+fname = "Cylinder2D-Re100-forces-coupled.dat"
 file_forces = open(fname,"w")
 
 
